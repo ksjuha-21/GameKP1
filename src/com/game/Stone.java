@@ -2,7 +2,6 @@ package com.game;
 
 public class Stone extends Sprite {
 
-
     public Stone(int x, int y) {
         super(x, y);
 
@@ -16,7 +15,6 @@ public class Stone extends Sprite {
     }
 
     public void move() {
-
         y += 1;
     }
 }

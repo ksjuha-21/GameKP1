@@ -20,30 +20,30 @@ public class Board extends JPanel implements ActionListener {
     private final int B_HEIGHT = 1000;
     private final int DELAY = 15;
 
-    //координаты орехов
+    //координаты орехов на поле
     private final int[][] npos = {
             {0, 0}, {600,-300}, {300, -600}, {900, -900},
-            {1400, -1200}, {1200, -1500}/*, {100, -1800},
+            {1400, -1200}, {1200, -1500}, {100, -1800},
             {700, -2100}, {400, -2400}, {1300, -2700},
             {1000, -3000}, {500, -3300}, {200, -3600},
             {1100, -3900}, {800, -4200}, {1400, -4500},
             {300, -4800}, {0, -5100}, {900, -5400},
             {600, -5700}, {1400, -6000}, {1200, -6300},
             {400, -6600}, {100, -6900}, {1000, -7200},
-            {700, -7500}, {1300, -7800}, {200, -8100}*/
+            {700, -7500}, {1300, -7800}, {200, -8100}
     };
 
-    //координаты камней
+    //координаты камней на поле
     private final int[][] mpos = {
-            {150, 0}, {500,-300}, {900, -600}, {1400, -900}
+            {150, 0}, {500,-500}, {900, -1300}, {1400, -1700}
     };
+
     public Board() {
 
         initBoard();
     }
 
-
-
+    //запуск прорисовки элементов
     public void initBoard() {
 
         addKeyListener(new TAdapter());
@@ -61,96 +61,80 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
-
+    //создаем список орехов
     public void initNuts() {
         nuts = new ArrayList<>();
 
-        //создаем список орехов
         for (int[] p : npos) {
             nuts.add(new Nuts(p[0], p[1]));
         }
     }
 
+    //создаем список камней
     public void initStone() {
         ms = new ArrayList<>();
-        //создаем список камней
+
         for (int[] m : mpos) {
             ms.add(new Stone(m[0], m[1]));
         }
     }
-
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (ingame) {
-
             drawObjects(g);
-
         } else {
-
             drawGameOver(g);
         }
-
         Toolkit.getDefaultToolkit().sync();
     }
 
+    //прорисовка элементов
     private void drawObjects(Graphics g) {
-        //рисуе фон
+
+        //фон
         g.drawImage(new ImageIcon("fone.jpg").getImage(), 0, 0, 1500, 1000, this);
 
-        //рисуем белку
+        //белка
         if (squirrel.isVisible()) {
             g.drawImage(squirrel.getImage(), squirrel.getX(), squirrel.getY(),
                     this);
         }
 
-        //рисуем камни
+        //камни
         for (Stone m : ms) {
             if (m.isVisible()) {
                 g.drawImage(m.getImage(), m.getX(), m.getY(), this);
             }
         }
 
-        //рисуем орехи
+        //орехи
         for (Nuts a : nuts) {
             if (a.isVisible()) {
                 g.drawImage(a.getImage(), a.getX(), a.getY(), this);
             }
         }
 
-        //рисуем запись сколько осталось орехов
+        //вывод на экран записи, сколько осталось собрать орехов
         g.setColor(Color.WHITE);
         Font small = new Font("Helvetica", Font.BOLD, 25);
         g.setFont(small);
         g.drawString("NUTS LEFT: " + nuts.size(), 1300, 30);
     }
 
+    //прорисовка Game Over и меню
     private void drawGameOver(Graphics g) {
 
-        String msg = "Game Over";
-        String msg1 = "You won!:)";
-
-        Font small = new Font("Helvetica", Font.BOLD, 50);
-        FontMetrics fm = getFontMetrics(small);
-        g.drawImage(new ImageIcon("fone.jpg").getImage(), 0, 0, 1500, 1000, this);
-        g.setColor(Color.black);
-        g.setFont(small);
-        if (nuts.size()!=0) {
-            g.drawImage(new ImageIcon("finish.png").getImage(), 650, 500, 196, 265, this);
-            g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
-                    B_HEIGHT / 2);
-        }
-        else {
-            g.drawImage(new ImageIcon("scrnut.png").getImage(), 650, 500, 237, 215, this);
-            g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2,
-                    B_HEIGHT / 2);
-        }
+            Playstate playstate = new Playstate(nuts,true);
+            add(playstate);
+            playstate.requestFocus();
+            GameMain.ex.validate();
 
     }
 
-    //этот метод каждый раз вызывается таймером, за счет него предметы движутся
+    //этот метод позволяеи предметам двигаться на поле, а также проверяет статус игры inGame()
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -160,12 +144,13 @@ public class Board extends JPanel implements ActionListener {
         updateStone();
         updateNuts();
 
-        //проверяем столкновения орехов и камней с белкой
+        //проверка столкновений орехов и камней с белкой
         checkCollisions();
 
         repaint();
     }
 
+    //проверка статуса игры
     private void inGame() {
 
         if (!ingame) {
@@ -173,6 +158,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    //обновления положения белки на экране
     private void updateSquirrel() {
 
         if (squirrel.isVisible()) {
@@ -180,6 +166,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    //обновления положения камней на экране
     private void updateStone() {
 
         for (int i = 0; i < ms.size(); i++) {
@@ -194,6 +181,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    //обновления положения орехов на экране
     private void updateNuts() {
 
         if (nuts.isEmpty()) {
@@ -213,7 +201,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    //проверяем столкновения
+    //проверка столкновений орехов и камней с белкой
     public void checkCollisions() {
 
         Rectangle r3 = squirrel.getBounds();
@@ -245,9 +233,9 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    //обработка событий клавиатуры
     private class TAdapter extends KeyAdapter {
 
-        //эти методы реагируют на кнопки из клавиатуры, за счет них управляем белкой
         @Override
         public void keyReleased(KeyEvent e) {
             squirrel.keyReleased(e);

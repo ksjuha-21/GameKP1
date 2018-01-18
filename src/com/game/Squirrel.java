@@ -26,9 +26,7 @@ public class Squirrel extends Sprite {
         if (x < 1) {
             x = 1;
         }
-
     }
-
 
     public void keyPressed(KeyEvent e) {
 
@@ -41,7 +39,6 @@ public class Squirrel extends Sprite {
         if (key == KeyEvent.VK_RIGHT) {
             dx  +=speed;
         }
-
     }
 
     public void keyReleased(KeyEvent e) {
@@ -55,7 +52,5 @@ public class Squirrel extends Sprite {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 0;
         }
-
     }
-
 }

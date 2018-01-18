@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GameMain extends JFrame {
 
-    private boolean state;
+    public static GameMain ex;
 
     public GameMain() {
 
@@ -29,7 +29,7 @@ public class GameMain extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GameMain ex = new GameMain();
+                 ex = new GameMain();
                 ex.setVisible(true);
             }
         });

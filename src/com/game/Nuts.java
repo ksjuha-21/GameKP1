@@ -2,10 +2,8 @@ package com.game;
 
 public class Nuts extends Sprite {
 
-
     public Nuts(int x, int y) {
         super(x, y);
-
         initNuts();
     }
 
@@ -16,10 +14,6 @@ public class Nuts extends Sprite {
     }
 
     public void move() {
-
-
         y += 2;
     }
-
-
 }
